@@ -76,12 +76,14 @@ function create() {
   this.leftKeyPressed = false;
   this.rightKeyPressed = false;
   this.upKeyPressed = false;
+  this.downKeyPressed = false;
 }
 
 function update() {
   const left = this.leftKeyPressed;
   const right = this.rightKeyPressed;
   const up = this.upKeyPressed;
+  const down = this.downKeyPressed;
 
   if (this.cursors.left.isDown) {
     this.leftKeyPressed = true;
@@ -94,12 +96,22 @@ function update() {
 
   if (this.cursors.up.isDown) {
     this.upKeyPressed = true;
+  } else if (this.cursors.down.isDown) {
+    this.downKeyPressed = true;
+  } else {
+    this.upKeyPressed = false;
+    this.downKeyPressed = false;
+  }
+
+  /*
+  if (this.cursors.up.isDown) {
+    this.upKeyPressed = true;
   } else {
     this.upKeyPressed = false;
   }
-
-  if (left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed) {
-    this.socket.emit('playerInput', { left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed });
+*/
+  if (left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed|| up !== this.downKeyPressed ) {
+    this.socket.emit('playerInput', { left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed , down: this.downKeyPressed });
   }
 }
 

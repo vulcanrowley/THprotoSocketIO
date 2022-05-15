@@ -52,15 +52,25 @@ function create() {
     console.log('a user connected');
     // create a new player and add it to our players object
     players[socket.id] = {
-      rotation: 0,
+      //rotation: 0,
+      health: 100,
+      hasTreasure: false,
+      // add code in lobby to select avatar
+      avatar: 0, // for now just a color
+      // Gold 	#FFD700
+      // Blue 	#0000FF
+      // Green 	#00FF00
+      // Red 	#FF0000
+      // add code in lobby to select initial location
       x: Math.floor(Math.random() * 700) + 50,
       y: Math.floor(Math.random() * 500) + 50,
       playerId: socket.id,
-      team: (Math.floor(Math.random() * 2) == 0) ? 'red' : 'blue',
+      //team: (Math.floor(Math.random() * 2) == 0) ? 'red' : 'blue',
       input: {
         left: false,
         right: false,
-        up: false
+        up: false,
+        down: false
       }
     };
     // add player to server
@@ -94,6 +104,15 @@ function create() {
 function update() {
   this.players.getChildren().forEach((player) => {
     const input = players[player.playerId].input;
+
+    if (input.left) player.setVelocityX(-160)
+    else if (input.right) player.setVelocityX(160)
+    else player.setVelocityX(0)
+    if (input.up) player.setVelocityY(-160)
+    else if (input.down) player.setVelocityY(160)
+    else player.setVelocityY(0)
+/*
+    ?
     if (input.left) {
       player.setAngularVelocity(-300);
     } else if (input.right) {
@@ -107,10 +126,13 @@ function update() {
     } else {
       player.setAcceleration(0);
     }
-
+*/
     players[player.playerId].x = player.x;
     players[player.playerId].y = player.y;
-    players[player.playerId].rotation = player.rotation;
+    players[player.playerId].health = player.health;
+    players[player.playerId].hasTreasure = player.hasTreasure;
+    //players[player.playerId].avatar = player.avatar;// really only needed if changed to gold
+    //players[player.playerId].rotation = player.rotation;
   });
   this.physics.world.wrap(this.players, 5);
   io.emit('playerUpdates', players);
@@ -129,9 +151,10 @@ function handlePlayerInput(self, playerId, input) {
 }
 
 function addPlayer(self, playerInfo) {
+  // modify for different avatar(user selected?) and starting location
   const player = self.physics.add.image(playerInfo.x, playerInfo.y, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
   player.setDrag(100);
-  player.setAngularDrag(100);
+  //player.setAngularDrag(100);
   player.setMaxVelocity(200);
   player.playerId = playerInfo.playerId;
   self.players.add(player);
